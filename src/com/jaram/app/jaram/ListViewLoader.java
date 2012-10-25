@@ -9,13 +9,17 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
@@ -25,11 +29,12 @@ import android.widget.Toast;
 
 public class ListViewLoader extends ListActivity implements
 		ListView.OnScrollListener {
-	private static String bbs_url = "http://www.jaram.org/board/bbs.php?tableID=[board_id]&type=json";
+	private final static String bbs_url = "http://www.jaram.org/board/bbs.php?tableID=[board_id]&type=json";
 	private static final String TAG_THREAD = "threads";
 	static JSONObject jObj = null;
 	static String json = "";
 	String board_id = "";
+	String board_name;
 	private static final String DEBUG_TAG = "ListView";
 	ProgressDialog progressDialog;
 	private int currentFirstVisibleItem;
@@ -47,14 +52,28 @@ public class ListViewLoader extends ListActivity implements
 		setUpView();
 
 		Intent intent = getIntent();
-		board_id = intent.getStringExtra(MainActivity.EXTRA_BOARD_NAME);
-		setTitle(board_id);
+		board_name = intent.getStringExtra(MainActivity.EXTRA_BOARD_NAME);
+		setTitle(board_name);
 
+		getThreadList();
+
+		getListView().setOnScrollListener(this);
+
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context arg0, Intent arg1) {
+				setUpView();
+				getThreadList();
+			}
+		}, new IntentFilter(EditorActivity.ACTION_WRITE_THREAD_SUCCESS));
+	}
+
+	private void getThreadList() {
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
 			setProgressBarIndeterminateVisibility(true);
-			String url = this.getListUrl(board_id);
+			String url = this.getListUrl(board_name);
 			Log.d(DEBUG_TAG, url);
 			new RetriveJsonTask().execute(url);
 
@@ -62,8 +81,6 @@ public class ListViewLoader extends ListActivity implements
 			Toast.makeText(this, getString(R.string.msg_network_not_enabled),
 					Toast.LENGTH_LONG).show();
 		}
-
-		getListView().setOnScrollListener(this);
 	}
 
 	private void setUpView() {
@@ -79,8 +96,6 @@ public class ListViewLoader extends ListActivity implements
 	}
 
 	private String getListUrl(String menu) {
-		String board_id = "";
-
 		if (menu.equals("Diary")) {
 			board_id = "diary";
 		} else if (menu.equals("Graduated")) {
@@ -216,7 +231,7 @@ public class ListViewLoader extends ListActivity implements
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			if (networkInfo != null && networkInfo.isConnected()) {
 				setProgressBarIndeterminateVisibility(true);
-				String url = this.getNextUrl(board_id);
+				String url = this.getNextUrl(board_name);
 				Log.d(DEBUG_TAG, url);
 				new RetriveJsonTask().execute(url);
 			} else {
@@ -235,7 +250,7 @@ public class ListViewLoader extends ListActivity implements
 			// NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			// if (networkInfo != null && networkInfo.isConnected()) {
 			// setProgressBarIndeterminateVisibility(true);
-			// String url = this.getListUrl(board_id);
+			// String url = this.getListUrl(board_name);
 			// Log.d(DEBUG_TAG, url);
 			// new RetriveJsonTask().execute(url);
 			// } else {
@@ -245,4 +260,23 @@ public class ListViewLoader extends ListActivity implements
 			// }
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_list, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.write_thread:
+			Intent intent = new Intent(this, EditorActivity.class);
+			intent.putExtra(MainActivity.EXTRA_BOARD_ID, board_id);
+			startActivity(intent);
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 }

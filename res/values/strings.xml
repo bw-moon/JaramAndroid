@@ -18,5 +18,9 @@
     <string name="msg_id_not_inserted">아이디를 설정해주세요.</string>
     <string name="title_login_dialog">로그인 중입니다.</string>
     <string name="title_comment">코멘트</string>
+    <string name="title_activity_editor">글작성</string>
+    <string name="menu_title_write">게시글 작성</string>
+    <string name="msg_write">글을 등록하고 있습니다.</string>
+    <string name="title_write_dialog">등록중</string>
 
 </resources>

@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ThreadActivity extends Activity {
-	private static String view_url = "http://jaram.org/board/view.php?tableID=[board_id]&id=[thread_id]&type=json";
+	private final static String view_url = "http://jaram.org/board/view.php?tableID=[board_id]&id=[thread_id]&type=json";
 	private static final String DEBUG_TAG = "ThreadActivity";
 	ProgressDialog progressDialog;
 
