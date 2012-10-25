@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_key_account_settings"
+        android:title="@string/pref_account_title" android:summary="@string/desc_pref_account">
+        <EditTextPreference
+            android:key="pref_key_account_id"
+            android:title="@string/title_pref_id" />
+        <EditTextPreference
+            android:imeOptions="actionSearch"
+            android:key="pref_key_account_pass"
+            android:password="true"
+            android:title="@string/title_pass" 
+            android:inputType="text"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
