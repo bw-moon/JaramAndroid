@@ -57,7 +57,7 @@ public class EditorActivity extends Activity {
 		String title = ((EditText) findViewById(R.id.fieldTitle)).getText()
 				.toString();
 		String content = ((EditText) findViewById(R.id.fieldContent)).getText()
-				.toString();
+				.toString()+"\n\n from Jaram Android";
 
 		Log.d(DEBUG_TAG, "title :" + title);
 
