@@ -1,3 +1,9 @@
+#################
+## JetBrains
+#################
+
+*.iml
+.idea/
 
 #################
 ## Eclipse
@@ -17,6 +23,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+
 
 # External tool builders
 .externalToolBuilders/
